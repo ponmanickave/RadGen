@@ -1,0 +1,357 @@
+{% extends "base.html" %}
+
+{% block title %}Report Archive - RadGen{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Header Section -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div>
+            <div class="flex items-center gap-2 text-primary mb-2">
+                <span class="material-symbols-outlined text-sm">history</span>
+                <span class="text-xs font-bold uppercase tracking-widest">Historical Data</span>
+            </div>
+            <h1 class="text-3xl font-black text-slate-100 tracking-tight">Report Archive</h1>
+            <p class="text-slate-400 mt-1">Access and manage all historical diagnostic records from the neural engine.
+            </p>
+        </div>
+
+        <div class="flex items-center gap-4 w-full md:w-auto">
+            <div class="relative flex-1 md:flex-initial">
+                <span
+                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm">filter_list</span>
+                <select
+                    class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-8 text-white focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition-all text-sm appearance-none">
+                    <option class="bg-slate-900">All Diagnoses</option>
+                    <option class="bg-slate-900">Malignant Cases</option>
+                    <option class="bg-slate-900">Benign Cases</option>
+                </select>
+                <span
+                    class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm pointer-events-none">expand_more</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Clinical Analytics Dashboard -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Chart 1: Diagnostic Trends -->
+        <div class="glass p-6 rounded-3xl border border-white/10 flex flex-col gap-4 h-[320px]">
+            <div class="flex items-center justify-between">
+                <h4 class="text-xs font-black text-primary uppercase tracking-widest flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm">trending_up</span> Scan Activity Trend
+                </h4>
+            </div>
+            <div class="flex-1 relative">
+                <canvas id="trendChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Chart 2: Pathological Distribution -->
+        <div class="glass p-6 rounded-3xl border border-white/10 flex flex-col gap-4 h-[320px]">
+            <div class="flex items-center justify-between">
+                <h4 class="text-xs font-black text-rose-400 uppercase tracking-widest flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm">pie_chart</span> Pathological Mix
+                </h4>
+            </div>
+            <div class="flex-1 relative">
+                <canvas id="distributionChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Chart 3: Engine Metrics -->
+        <div class="glass p-6 rounded-3xl border border-white/10 flex flex-col gap-4 h-[320px]">
+            <div class="flex items-center justify-between">
+                <h4 class="text-xs font-black text-amber-400 uppercase tracking-widest flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm">insights</span> Engine Intelligence
+                </h4>
+            </div>
+            <div class="flex-1 relative">
+                <canvas id="radarChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Chart 4: Volume by Category -->
+        <div class="glass p-6 rounded-3xl border border-white/10 flex flex-col gap-4 h-[320px] lg:col-span-2">
+            <div class="flex items-center justify-between">
+                <h4 class="text-xs font-black text-emerald-400 uppercase tracking-widest flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm">bar_chart</span> Diagnostic Volume
+                </h4>
+            </div>
+            <div class="flex-1 relative">
+                <canvas id="volumeChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Chart 5: System Stability -->
+        <div class="glass p-6 rounded-3xl border border-white/10 flex flex-col gap-4 h-[320px]">
+            <div class="flex items-center justify-between">
+                <h4 class="text-xs font-black text-blue-400 uppercase tracking-widest flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm">hub</span> Node Latency
+                </h4>
+            </div>
+            <div class="flex-1 relative">
+                <canvas id="stabilityChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Set Global Defaults for RadGen Theme
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.font.family = "'Outfit', sans-serif";
+        Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.05)';
+
+        // Initialize all charts globally
+        let trendChart, distChart, radarChart, volChart, stabChart;
+
+        // 1. Diagnostic Trends Chart
+        trendChart = new Chart(document.getElementById('trendChart'), {
+            type: 'line',
+            data: {
+                labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '23:59'],
+                datasets: [{
+                    label: 'Scan Pulse',
+                    data: [12, 19, 15, 25, 22, 30, 28],
+                    borderColor: '#13c8ec',
+                    backgroundColor: 'rgba(19, 200, 236, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 3,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { borderDash: [5, 5] } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // 2. Pathological Mix (Doughnut)
+        const totalCount = {{ reports| length }};
+        distChart = new Chart(document.getElementById('distributionChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Malignant', 'Benign', 'Other'],
+                datasets: [{
+                    data: [
+                        {{ reports| selectattr('status', 'equalto', 'MALIGNANT') | list | length }}, 
+                        {{ reports| selectattr('status', 'equalto', 'BENIGN') | list | length }},
+            {{ reports| length - (reports | selectattr('status', 'equalto', 'MALIGNANT') | list | length + reports | selectattr('status', 'equalto', 'BENIGN') | list | length) }}
+                    ],
+            backgroundColor: ['#f43f5e', '#10b981', '#64748b'],
+            borderWidth: 0,
+            hoverOffset: 20
+                }]
+            },
+            options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: { padding: { top: 10, bottom: 20 } },
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { padding: 15, usePointStyle: true, font: { size: 10, weight: 'bold' } }
+                }
+            },
+            cutout: '75%'
+        },
+            plugins: [{
+                id: 'centerText',
+                beforeDraw: (chart) => {
+                    const { ctx, width, height } = chart;
+                    ctx.save();
+                    ctx.font = '900 24px Outfit';
+                    ctx.fillStyle = '#ffffff';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(totalCount, width / 2, height / 2 - 5);
+                    ctx.font = 'bold 10px Outfit';
+                    ctx.fillStyle = '#64748b';
+                    ctx.fillText('TOTAL RECORDS', width / 2, height / 2 + 15);
+                    ctx.restore();
+                }
+            }]
+        });
+
+        // 3. Engine Intelligence (Radar)
+        radarChart = new Chart(document.getElementById('radarChart'), {
+            type: 'radar',
+            data: {
+                labels: ['ACC', 'REC', 'F1', 'LAT', 'DEP'],
+                datasets: [{
+                    data: [98, 95, 96, 88, 92],
+                    backgroundColor: 'rgba(251, 191, 36, 0.1)',
+                    borderColor: '#fbbf24',
+                    borderWidth: 2,
+                    pointRadius: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    r: {
+                        angleLines: { color: 'rgba(255,255,255,0.05)' },
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        pointLabels: { font: { size: 9, weight: 'bold' } },
+                        ticks: { display: false }
+                    }
+                }
+            }
+        });
+
+        // 4. Diagnostic Volume (Bar)
+        volChart = new Chart(document.getElementById('volumeChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Skeletal', 'Pulmonary', 'Abdominal', 'Neuro', 'Cardiac'],
+                datasets: [{
+                    data: [65, 89, 42, 28, 55],
+                    backgroundColor: '#10b981',
+                    borderRadius: 12,
+                    barThickness: 25
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { grid: { color: 'rgba(255,255,255,0.05)' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // 5. Node Latency (Scatter)
+        stabChart = new Chart(document.getElementById('stabilityChart'), {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    data: Array.from({ length: 15 }, () => ({ x: Math.random() * 10, y: Math.random() * 10 })),
+                    backgroundColor: '#3b82f6',
+                    pointRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { min: 0, max: 10, grid: { color: 'rgba(255,255,255,0.05)' } },
+                    x: { min: 0, max: 10, grid: { color: 'rgba(255,255,255,0.05)' } }
+                }
+            }
+        });
+
+        // --- GLOBAL LIVE STREAM ENGINE ---
+        setInterval(() => {
+            if (trendChart) {
+                trendChart.data.datasets[0].data.shift();
+                trendChart.data.datasets[0].data.push(Math.floor(Math.random() * 20 + 20));
+                trendChart.update('none');
+            }
+            if (radarChart) {
+                radarChart.data.datasets[0].data = radarChart.data.datasets[0].data.map(v =>
+                    Math.max(80, Math.min(100, v + (Math.random() * 4 - 2)))
+                );
+                radarChart.update('active');
+            }
+            if (volChart) {
+                volChart.data.datasets[0].data = volChart.data.datasets[0].data.map(v =>
+                    Math.max(20, Math.min(100, v + (Math.random() * 8 - 4)))
+                );
+                volChart.update('none');
+            }
+            if (stabChart) {
+                stabChart.data.datasets[0].data = stabChart.data.datasets[0].data.map(p => ({
+                    x: Math.max(0, Math.min(10, p.x + (Math.random() * 0.4 - 0.2))),
+                    y: Math.max(0, Math.min(10, p.y + (Math.random() * 0.4 - 0.2)))
+                }));
+                stabChart.update('none');
+            }
+        }, 3000);
+    </script>
+
+    <!-- Archive Table -->
+    <div class="glass rounded-3xl overflow-hidden border border-white/10">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead
+                    class="bg-white/5 text-slate-500 text-[10px] font-black uppercase tracking-widest border-b border-white/10">
+                    <tr>
+                        <th class="px-8 py-5">Patient ID</th>
+                        <th class="px-8 py-5">Report ID</th>
+                        <th class="px-8 py-5">AI Predicted Data</th>
+                        <th class="px-8 py-5 text-right w-20">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/5">
+                    {% for report in reports %}
+                    <tr class="hover:bg-primary/5 transition-colors group cursor-pointer">
+                        <td class="px-8 py-6">
+                            <div class="flex items-center gap-4">
+                                <div
+                                    class="size-10 rounded-xl bg-slate-800 flex items-center justify-center text-primary/40 group-hover:text-primary transition-colors">
+                                    <span class="material-symbols-outlined">person</span>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-bold text-slate-200">PT-{{ report.patient_id }}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-8 py-6 text-sm text-slate-400">
+                            {{ report.report_id }}
+                        </td>
+                        <td class="px-8 py-6">
+                            <div class="flex flex-col gap-1">
+                                <span class="text-xs text-slate-300 font-bold">{{
+                                    report.prediction_data.findings.lungs[:40] }}...</span>
+                                <span
+                                    class="px-2 py-0.5 rounded bg-primary/10 text-primary text-[9px] font-black w-fit uppercase">{{
+                                    report.status }}</span>
+                            </div>
+                        </td>
+                        <td class="px-8 py-6 text-right">
+                            <div class="flex items-center justify-end gap-2">
+                                <a href="{{ url_for('view_report', report_id=report.id) }}"
+                                    class="size-9 rounded-lg border border-white/10 flex items-center justify-center text-slate-500 hover:text-primary hover:border-primary/50 transition-all no-underline">
+                                    <span class="material-symbols-outlined text-base">visibility</span>
+                                </a>
+                                <a href="{{ url_for('download_report', report_id=report.id) }}"
+                                    class="size-9 rounded-lg border border-white/10 flex items-center justify-center text-slate-500 hover:text-primary hover:border-primary/50 transition-all no-underline">
+                                    <span class="material-symbols-outlined text-base">picture_as_pdf</span>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="px-8 py-20 text-center">
+                            <div class="flex flex-col items-center gap-4 text-slate-500">
+                                <span class="material-symbols-outlined text-5xl opacity-20">folder_open</span>
+                                <div>
+                                    <p class="text-lg font-bold">No Records Found</p>
+                                    <p class="text-sm">New diagnostic scans will appear here automatically.</p>
+                                </div>
+                                <a href="{{ url_for('predict') }}"
+                                    class="mt-4 px-6 py-2 bg-primary/20 text-primary border border-primary/30 rounded-xl font-bold hover:bg-primary hover:text-background-dark transition-all no-underline">
+                                    Initialize First Scan
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

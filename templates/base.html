@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>{% block title %}RadGen - AI-Powered Medical Imaging{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13c8ec",
+                        "background-light": "#f6f8f8",
+                        "background-dark": "#101f22",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .glass-primary {
+            background: rgba(19, 200, 236, 0.1);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(19, 200, 236, 0.2);
+        }
+
+            {
+            % block extra_css %
+        }
+
+            {
+            % endblock %
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="w-20 lg:w-64 glass border-r border-primary/10 flex flex-col transition-all duration-300 z-50">
+            <div class="p-6 flex items-center gap-3">
+                <div class="size-8 bg-primary rounded-lg flex items-center justify-center text-background-dark">
+                    <span class="material-symbols-outlined font-bold">clinical_notes</span>
+                </div>
+                <h1 class="hidden lg:block text-xl font-bold tracking-tight text-primary">RadGen</h1>
+            </div>
+            <nav class="flex-1 px-4 py-6 space-y-2">
+                <a href="{{ url_for('dashboard') }}"
+                    class="flex items-center gap-4 px-3 py-3 rounded-xl {% if request.endpoint == 'dashboard' %}bg-primary/10 text-primary border border-primary/20{% else %}hover:bg-primary/5 text-slate-400 hover:text-primary{% endif %} transition-colors">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <span class="hidden lg:block font-medium">Dashboard</span>
+                </a>
+                <a href="{{ url_for('predict') }}"
+                    class="flex items-center gap-4 px-3 py-3 rounded-xl {% if request.endpoint == 'predict' %}bg-primary/10 text-primary border border-primary/20{% else %}hover:bg-primary/5 text-slate-400 hover:text-primary{% endif %} transition-colors">
+                    <span class="material-symbols-outlined">query_stats</span>
+                    <span class="hidden lg:block font-medium">AI Predictions</span>
+                </a>
+                <a href="{{ url_for('archive') }}"
+                    class="flex items-center gap-4 px-3 py-3 rounded-xl {% if request.endpoint == 'archive' %}bg-primary/10 text-primary border border-primary/20{% else %}hover:bg-primary/5 text-slate-400 hover:text-primary{% endif %} transition-colors">
+                    <span class="material-symbols-outlined">folder_open</span>
+                    <span class="hidden lg:block font-medium">Archive</span>
+                </a>
+                <a href="#"
+                    class="flex items-center gap-4 px-3 py-3 rounded-xl hover:bg-primary/5 text-slate-400 hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined">settings</span>
+                    <span class="hidden lg:block font-medium">Settings</span>
+                </a>
+            </nav>
+            <div class="p-4 border-t border-primary/10">
+                {% if current_user.is_authenticated %}
+                <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-primary/5 cursor-pointer">
+                    <div class="size-10 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden">
+                        <img alt="Doctor profile" class="rounded-full w-full h-full object-cover"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwaunHKXFvoVGWcjTAyTYo11w_rOJZewyMKLOAspyxnn3drubm8zQM1Tq7u4T-G-UQHVkC6hvGfVRFFAty4nM7vQu3cRLWpE9ev0pyX9efy1uqxyMorxUVhOd4_NefmtkU_n1q2QkXZpDJ9FbLGMNoy-1Z5L2Duwy26K4AbZtWqjZgVNYUYBcxyceswr9_sNQ79tKaMEcOGJTBLgLn0jIzJCcZRCiESTbTjm4G0aPYW4R_Uk-InFFEqNBcYpA2qV9tSqV38Okb4xxW" />
+                    </div>
+                    <div class="hidden lg:block overflow-hidden">
+                        <p class="text-sm font-bold truncate">{% if current_user.name %}{{ current_user.name }}{% else
+                            %}{{ current_user.email.split('@')[0] }}{% endif %}</p>
+                        <p class="text-xs text-slate-400 truncate">{{ current_user.role|capitalize }}</p>
+                    </div>
+                </div>
+                <a href="{{ url_for('logout') }}"
+                    class="flex items-center gap-4 px-3 py-3 mt-2 rounded-xl hover:bg-red-500/10 text-slate-400 hover:text-red-400 transition-colors">
+                    <span class="material-symbols-outlined">logout</span>
+                    <span class="hidden lg:block font-medium">Logout</span>
+                </a>
+                {% else %}
+                <div class="p-2">
+                    <a href="{{ url_for('login') }}"
+                        class="flex items-center gap-3 text-primary font-bold hover:underline">
+                        <span class="material-symbols-outlined">login</span>
+                        <span class="hidden lg:block">System Login</span>
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 flex flex-col overflow-hidden">
+            <!-- Top Navigation Bar -->
+            <header class="h-20 glass border-b border-primary/10 px-8 flex items-center justify-between">
+                <div class="flex items-center gap-6 flex-1">
+                    <div class="relative max-w-md w-full">
+                        <span
+                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+                        <input
+                            class="w-full bg-primary/5 border border-primary/10 rounded-xl py-2 pl-10 pr-4 focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none text-sm transition-all"
+                            placeholder="Search patients, scans or reports..." type="text" />
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button
+                        class="size-10 rounded-xl glass hover:bg-primary/10 text-slate-400 hover:text-primary flex items-center justify-center transition-colors">
+                        <span class="material-symbols-outlined">dark_mode</span>
+                    </button>
+                    <button
+                        class="size-10 rounded-xl glass hover:bg-primary/10 text-slate-400 hover:text-primary flex items-center justify-center relative transition-colors">
+                        <span class="material-symbols-outlined">notifications</span>
+                        <span class="absolute top-2 right-2 size-2 bg-primary rounded-full"></span>
+                    </button>
+                    <a href="{{ url_for('predict') }}"
+                        class="bg-primary hover:bg-primary/90 text-background-dark font-bold px-6 py-2 rounded-xl flex items-center gap-2 transition-transform active:scale-95 no-underline">
+                        <span class="material-symbols-outlined text-xl">add</span>
+                        New Scan
+                    </a>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="flex-1 overflow-y-auto p-8">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        {% for category, message in messages %}
+                        Swal.fire({
+                            icon: '{{ 'success' if category == 'success' else 'error' }}',
+                            title: '{{ 'Success' if category == 'success' else 'Error' }}',
+                            text: '{{ message }}',
+                            background: '#101f22',
+                            color: '#fff',
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true
+                        });
+                        {% endfor %}
+                    });
+                </script>
+                {% endif %}
+                {% endwith %}
+
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>RadGen - AI-Powered Medical Imaging</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13c8ec",
+                        "background-light": "#f6f8f8",
+                        "background-dark": "#101f22",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased overflow-x-hidden">
+    <div class="relative flex min-h-screen w-full flex-col">
+        <!-- Sticky Navigation -->
+        <header
+            class="sticky top-0 z-50 w-full border-b border-slate-200/10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-6 lg:px-20 py-4">
+            <nav class="flex items-center justify-between max-w-7xl mx-auto">
+                <div class="flex items-center gap-2 text-primary">
+                    <span class="material-symbols-outlined text-3xl">biotech</span>
+                    <h2 class="text-slate-900 dark:text-white text-xl font-bold tracking-tight">RadGen</h2>
+                </div>
+                <div class="hidden md:flex items-center gap-10">
+                    <a class="text-slate-600 dark:text-slate-300 hover:text-primary transition-colors text-sm font-medium"
+                        href="#">Solutions</a>
+                    <a class="text-slate-600 dark:text-slate-300 hover:text-primary transition-colors text-sm font-medium"
+                        href="#">Features</a>
+                    <a class="text-slate-600 dark:text-slate-300 hover:text-primary transition-colors text-sm font-medium"
+                        href="#">Technology</a>
+                    <a class="text-slate-600 dark:text-slate-300 hover:text-primary transition-colors text-sm font-medium"
+                        href="#">Resources</a>
+                </div>
+                <div class="flex gap-4">
+                    <a href="{{ url_for('login') }}"
+                        class="hidden sm:flex px-5 py-2 rounded-lg text-slate-900 dark:text-white text-sm font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition-all items-center">
+                        Login
+                    </a>
+                    <a href="{{ url_for('login') }}"
+                        class="bg-primary hover:bg-primary/90 text-background-dark px-6 py-2 rounded-lg text-sm font-bold shadow-lg shadow-primary/20 transition-all">
+                        Get Started
+                    </a>
+                </div>
+            </nav>
+        </header>
+        <main class="flex-grow">
+            <!-- Hero Section -->
+            <section
+                class="relative max-w-7xl mx-auto px-6 lg:px-10 py-16 lg:py-24 grid lg:grid-cols-2 gap-12 items-center">
+                <div class="flex flex-col gap-8">
+                    <div
+                        class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary w-fit">
+                        <span class="material-symbols-outlined text-sm">emergency_share</span>
+                        <span class="text-xs font-bold uppercase tracking-wider">Next-Gen AI Diagnostics</span>
+                    </div>
+                    <h1
+                        class="text-slate-900 dark:text-white text-5xl lg:text-7xl font-black leading-tight tracking-tight">
+                        Precision Medicine <br />
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-400">Powered
+                            by AI</span>
+                    </h1>
+                    <p class="text-slate-600 dark:text-slate-400 text-lg lg:text-xl leading-relaxed max-w-lg">
+                        Empowering radiologists with high-precision AI diagnostics, automated clinical reporting, and
+                        predictive health analytics.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="{{ url_for('login') }}"
+                            class="bg-primary hover:bg-primary/90 text-background-dark px-8 py-4 rounded-xl text-base font-bold shadow-xl shadow-primary/20 flex items-center gap-2 transition-transform hover:-translate-y-1">
+                            Start Free Trial <span class="material-symbols-outlined">arrow_forward</span>
+                        </a>
+                        <button
+                            class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-900 dark:text-white px-8 py-4 rounded-xl text-base font-bold transition-all">
+                            View Demo
+                        </button>
+                    </div>
+                </div>
+                <div class="relative group">
+                    <div
+                        class="absolute -inset-4 bg-gradient-to-r from-primary/30 to-blue-500/30 rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity">
+                    </div>
+                    <div
+                        class="relative bg-slate-200 dark:bg-slate-800 rounded-3xl overflow-hidden aspect-square shadow-2xl border border-slate-300/50 dark:border-slate-700/50">
+                        <img alt="3D Glowing Medical Brain Scan"
+                            class="w-full h-full object-cover mix-blend-lighten opacity-80"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBm4RcGu-AIgNQ6g3qcVeOSzYnpb24dtWD2lA5gN7jhhWns57RVGIDIaYDo4DVdlhrBNibyHylj0R9we14fyVdpsQQZKEpfzeLEWCHCdkk4vvb3QFzZBR-yi6hMdqZHJhIznFGeBvhjNNClx26V4E2B-Y7wie4VIgJ7rQHb00lb40tpEcPdil8e6ICZK2tvKJneWmXoQawBsWF-PobNHLphCt3Ksbe1P7PW63SZLz19LX_hZKTJ-A4CApAjSyjr4VPVkuMeNN72ILoI" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-background-dark/80 to-transparent"></div>
+                        <div
+                            class="absolute bottom-6 left-6 right-6 p-4 bg-background-dark/40 backdrop-blur-md rounded-xl border border-white/10">
+                            <div class="flex items-center gap-3">
+                                <div class="size-2 rounded-full bg-emerald-400 animate-pulse"></div>
+                                <span class="text-xs font-semibold text-slate-100 uppercase">Live Analysis
+                                    Processing...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- Stats Bar -->
+            <section class="max-w-7xl mx-auto px-6 py-12">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+                    <div class="p-6 rounded-2xl bg-white/5 border border-slate-200/10 backdrop-blur-sm text-center">
+                        <p class="text-slate-500 text-xs font-bold uppercase mb-1">Accuracy</p>
+                        <h3 class="text-3xl font-black text-primary">99.8%</h3>
+                    </div>
+                    <div class="p-6 rounded-2xl bg-white/5 border border-slate-200/10 backdrop-blur-sm text-center">
+                        <p class="text-slate-500 text-xs font-bold uppercase mb-1">Processing</p>
+                        <h3 class="text-3xl font-black text-primary">&lt; 2.0s</h3>
+                    </div>
+                    <div class="p-6 rounded-2xl bg-white/5 border border-slate-200/10 backdrop-blur-sm text-center">
+                        <p class="text-slate-500 text-xs font-bold uppercase mb-1">Radiologists</p>
+                        <h3 class="text-3xl font-black text-primary">5,000+</h3>
+                    </div>
+                    <div class="p-6 rounded-2xl bg-white/5 border border-slate-200/10 backdrop-blur-sm text-center">
+                        <p class="text-slate-500 text-xs font-bold uppercase mb-1">Daily Scans</p>
+                        <h3 class="text-3xl font-black text-primary">1.2M</h3>
+                    </div>
+                </div>
+            </section>
+            <!-- Features Section -->
+            <section class="max-w-7xl mx-auto px-6 py-20 lg:py-32">
+                <div class="text-center mb-16 space-y-4">
+                    <h2 class="text-primary text-sm font-black uppercase tracking-widest">The Core Platform</h2>
+                    <h3 class="text-slate-900 dark:text-white text-4xl lg:text-5xl font-black">AI Solutions Built for
+                        Trust</h3>
+                    <p class="text-slate-500 max-w-2xl mx-auto">RadGen integrates directly into clinical PACS workflows
+                        to provide diagnostic clarity without disrupting speed.</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div
+                        class="group relative p-8 rounded-3xl bg-white/5 border border-slate-200/10 backdrop-blur-lg hover:border-primary/50 transition-all">
+                        <div
+                            class="size-14 rounded-2xl bg-primary/20 flex items-center justify-center mb-6 text-primary group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-3xl">psychology</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-900 dark:text-white mb-3">AI Diagnostics</h4>
+                        <p class="text-slate-500 leading-relaxed mb-6">Proprietary neural networks identify early-stage
+                            anomalies in 3D medical scans with surgical precision.</p>
+                        <a class="text-primary font-bold text-sm inline-flex items-center gap-1 group/link" href="#">
+                            Learn more <span
+                                class="material-symbols-outlined text-sm group-hover/link:translate-x-1 transition-transform">arrow_right_alt</span>
+                        </a>
+                    </div>
+                    <div
+                        class="group relative p-8 rounded-3xl bg-white/5 border border-slate-200/10 backdrop-blur-lg hover:border-primary/50 transition-all">
+                        <div
+                            class="size-14 rounded-2xl bg-emerald-500/20 flex items-center justify-center mb-6 text-emerald-400 group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-3xl">article</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Automated Reporting</h4>
+                        <p class="text-slate-500 leading-relaxed mb-6">Convert visual findings into structured clinical
+                            reports in seconds, saving hours of administrative work.</p>
+                        <a class="text-emerald-400 font-bold text-sm inline-flex items-center gap-1 group/link"
+                            href="#">
+                            Explore Workflow <span
+                                class="material-symbols-outlined text-sm group-hover/link:translate-x-1 transition-transform">arrow_right_alt</span>
+                        </a>
+                    </div>
+                    <div
+                        class="group relative p-8 rounded-3xl bg-white/5 border border-slate-200/10 backdrop-blur-lg hover:border-primary/50 transition-all">
+                        <div
+                            class="size-14 rounded-2xl bg-blue-500/20 flex items-center justify-center mb-6 text-blue-400 group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-3xl">monitoring</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Predictive Analytics</h4>
+                        <p class="text-slate-500 leading-relaxed mb-6">Longitudinal data analysis tracks patient
+                            progress and flags potential future risks based on imaging trends.</p>
+                        <a class="text-blue-400 font-bold text-sm inline-flex items-center gap-1 group/link" href="#">
+                            View Roadmap <span
+                                class="material-symbols-outlined text-sm group-hover/link:translate-x-1 transition-transform">arrow_right_alt</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+            <!-- CTA Section -->
+            <section class="max-w-7xl mx-auto px-6 py-20">
+                <div
+                    class="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-primary to-blue-600 px-8 py-16 lg:py-24 text-center">
+                    <div class="absolute top-0 right-0 -mr-20 -mt-20 size-64 bg-white/10 rounded-full blur-3xl"></div>
+                    <div class="absolute bottom-0 left-0 -ml-20 -mb-20 size-64 bg-black/10 rounded-full blur-3xl"></div>
+                    <div class="relative z-10 space-y-8">
+                        <h2 class="text-background-dark text-4xl lg:text-5xl font-black max-w-2xl mx-auto">
+                            Transform Your Radiology Workflow Today
+                        </h2>
+                        <p class="text-background-dark/80 text-lg max-w-xl mx-auto font-medium">
+                            Join over 500 medical institutions globally using RadGen to deliver better patient outcomes.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                            <a href="{{ url_for('login') }}"
+                                class="bg-background-dark text-white px-10 py-4 rounded-2xl font-bold shadow-2xl transition-transform hover:scale-105 items-center inline-flex justify-center">
+                                Schedule a Demo
+                            </a>
+                            <button
+                                class="bg-white/20 backdrop-blur-md text-background-dark px-10 py-4 rounded-2xl font-bold border border-white/30 transition-all hover:bg-white/30">
+                                Contact Sales
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <footer class="bg-slate-50 dark:bg-slate-950/50 py-12 px-6 border-t border-slate-200/10">
+            <div class="max-w-7xl mx-auto grid md:grid-cols-4 gap-12">
+                <div class="col-span-2 space-y-6">
+                    <div class="flex items-center gap-2 text-primary">
+                        <span class="material-symbols-outlined text-3xl">biotech</span>
+                        <h2 class="text-slate-900 dark:text-white text-2xl font-bold tracking-tight">RadGen</h2>
+                    </div>
+                    <p class="text-slate-500 max-w-sm">
+                        Advancing human health through the power of artificial intelligence and high-resolution medical
+                        imaging analysis.
+                    </p>
+                    <div class="flex gap-4">
+                        <a class="size-10 rounded-lg bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-primary transition-colors"
+                            href="#">
+                            <span class="material-symbols-outlined text-lg">share</span>
+                        </a>
+                        <a class="size-10 rounded-lg bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-primary transition-colors"
+                            href="#">
+                            <span class="material-symbols-outlined text-lg">public</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <h5 class="text-slate-900 dark:text-white font-bold uppercase text-xs tracking-widest">Platform</h5>
+                    <ul class="space-y-3 text-slate-500 text-sm">
+                        <li><a class="hover:text-primary transition-colors" href="#">AI Diagnostics</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Case Management</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Reporting Tool</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Integration API</a></li>
+                    </ul>
+                </div>
+                <div class="space-y-4">
+                    <h5 class="text-slate-900 dark:text-white font-bold uppercase text-xs tracking-widest">Company</h5>
+                    <ul class="space-y-3 text-slate-500 text-sm">
+                        <li><a class="hover:text-primary transition-colors" href="#">About Us</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Privacy Policy</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Terms of Service</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Contact Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="max-w-7xl mx-auto mt-12 pt-8 border-t border-slate-200/10 text-center text-slate-600 text-xs">
+                © 2026 RadGen Intelligence Inc. All rights reserved.
+            </div>
+        </footer>
+    </div>
+</body>
+
+</html>

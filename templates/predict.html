@@ -1,0 +1,284 @@
+{% extends "base.html" %}
+
+{% block title %}AI Diagnostic Interface - RadGen{% endblock %}
+
+{% block content %}
+<div class="max-w-[1200px] mx-auto w-full flex flex-col gap-8">
+    <!-- Header Section -->
+    <div class="flex flex-col gap-2">
+        <div class="flex items-center gap-2 text-primary">
+            <span class="material-symbols-outlined text-sm">auto_awesome</span>
+            <span class="text-xs font-bold uppercase tracking-widest">Predict Hybrid v2.4</span>
+        </div>
+        <h1 class="text-slate-900 dark:text-white text-4xl font-extrabold tracking-tight">AI Diagnostic Interface</h1>
+        <p class="text-slate-500 dark:text-slate-400 text-lg max-w-2xl">Deploying neural processing for automated
+            pathology detection and volumetric analysis.</p>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Left Column: Upload & Preview -->
+        <div class="lg:col-span-7 flex flex-col gap-6">
+            <form action="{{ url_for('predict') }}" method="POST" enctype="multipart/form-data" id="predict-form">
+                <input type="file" name="image" id="file-input" class="hidden" accept="image/*" required>
+
+                <div id="drop-zone"
+                    class="relative group h-[450px] flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/30 bg-primary/5 hover:bg-primary/10 transition-all cursor-pointer overflow-hidden">
+                    <!-- Background Pulse Visual -->
+                    <div class="absolute inset-0 opacity-20 pointer-events-none">
+                        <div
+                            class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary via-transparent to-transparent animate-pulse">
+                        </div>
+                    </div>
+
+                    <div id="upload-prompt" class="z-10 flex flex-col items-center text-center px-10">
+                        <div
+                            class="size-20 bg-primary/20 rounded-full flex items-center justify-center mb-6 ring-8 ring-primary/10">
+                            <span class="material-symbols-outlined text-4xl text-primary">upload_file</span>
+                        </div>
+                        <h3 class="text-xl font-bold dark:text-white mb-2" id="upload-text">Drag & Drop Medical Images
+                        </h3>
+                        <p class="text-slate-500 text-sm max-w-xs mb-8">DICOM, NIfTI, or High-Res JPG. Max file size:
+                            500MB per series.</p>
+                        <button type="button" onclick="document.getElementById('file-input').click()"
+                            class="px-8 py-3 bg-slate-900 dark:bg-white text-white dark:text-background-dark font-bold rounded-xl hover:scale-105 transition-transform">
+                            Browse Workstation
+                        </button>
+                    </div>
+
+                    <!-- Selected File Preview (hidden by default) -->
+                    <div id="file-preview"
+                        class="hidden z-20 flex flex-col items-center text-center px-10 w-full h-full justify-center bg-background-dark/80 backdrop-blur-sm">
+                        <img id="preview-img" src="#" alt="Preview"
+                            class="max-h-[300px] rounded-xl border border-primary/30 shadow-2xl mb-4">
+                        <p id="filename-display" class="text-primary font-bold mb-4"></p>
+                        <button type="button" onclick="resetUpload()"
+                            class="text-red-400 font-bold hover:underline">Remove Image</button>
+                    </div>
+
+                    <!-- Scanning Overlay (hidden by default) -->
+                    <div id="loading-overlay"
+                        class="hidden absolute inset-0 z-30 flex flex-col items-center justify-center bg-background-dark/95 backdrop-blur-md">
+                        <div class="relative size-32 mb-8">
+                            <div class="absolute inset-0 border-4 border-primary/20 rounded-full"></div>
+                            <div class="absolute inset-0 border-4 border-t-primary rounded-full animate-spin"></div>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span
+                                    class="material-symbols-outlined text-4xl text-primary animate-pulse">biotech</span>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-2">Neural Engine Analyzing...</h3>
+                        <p class="text-slate-400 text-center max-w-xs">Extracting feature maps and correlating clinical
+                            indicators.</p>
+                    </div>
+
+                    <!-- Shimmer Bar -->
+                    <div class="absolute bottom-0 left-0 right-0 h-1 bg-primary/20 overflow-hidden">
+                        <div class="h-full bg-primary w-1/3 rounded-full animate-[shimmer_2s_infinite]"></div>
+                    </div>
+                </div>
+
+                <!-- Hidden submission trigger -->
+                <input type="submit" id="submit-btn" class="hidden">
+            </form>
+
+            <!-- Summary Stats -->
+            <div class="grid grid-cols-2 gap-4">
+                <div
+                    class="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                    <span class="text-[10px] font-bold text-slate-500 uppercase">Available Models</span>
+                    <p class="text-xl font-black text-slate-800 dark:text-white">v2.4 [STABLE]</p>
+                </div>
+                <div
+                    class="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                    <span class="text-[10px] font-bold text-slate-500 uppercase">Analysis Confidence</span>
+                    <p class="text-xl font-black text-primary">98.2%</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Patient Data Form -->
+        <div class="lg:col-span-5">
+            <div
+                class="bg-white dark:bg-slate-800/50 backdrop-blur-md rounded-2xl p-8 border border-slate-200 dark:border-slate-700 shadow-xl">
+                <h2 class="text-xl font-bold dark:text-white mb-6 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">assignment_ind</span>
+                    Clinical Data Profile
+                </h2>
+                <!-- Link form fields to the main form via form attribute if needed, or wrap the whole thing -->
+                <!-- For simplicity, I'll wrap the form inputs in the main action form -->
+                <div class="space-y-5">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-widest">Patient
+                                Name</label>
+                            <input type="text" form="predict-form" name="patient_name"
+                                class="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary text-sm p-3 text-white"
+                                placeholder="John Doe" required />
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-widest">Patient ID</label>
+                            <input type="text" form="predict-form" name="patient_id"
+                                class="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary text-sm p-3 text-white"
+                                placeholder="RG-99281" required />
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold text-slate-500 uppercase tracking-widest">Age</label>
+                        <input type="number" form="predict-form" name="age"
+                            class="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary text-sm p-3 text-white"
+                            placeholder="Years" />
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold text-slate-500 uppercase">Study Type</label>
+                        <select form="predict-form" name="study_type"
+                            class="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary text-sm p-3 text-white">
+                            <option>MRI Neural (T1/T2 Weighted)</option>
+                            <option>CT Pulmonary Angiography</option>
+                            <option>Digital Mammography</option>
+                            <option>Skeletal Radiography</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold text-slate-500 uppercase">Clinical Indications</label>
+                        <textarea form="predict-form" name="clinical_notes"
+                            class="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary text-sm p-3 text-white"
+                            placeholder="Symptoms, history, previous diagnosis..." rows="3"></textarea>
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-200 dark:border-slate-800">
+                        <button type="button" onclick="triggerSubmit()"
+                            class="w-full py-4 bg-primary text-background-dark font-black text-lg rounded-xl shadow-lg shadow-primary/30 hover:shadow-primary/50 flex items-center justify-center gap-3 transition-all">
+                            <span class="material-symbols-outlined">analytics</span>
+                            INITIALIZE HYBRID SCAN
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Status Sidebar -->
+            <div
+                class="mt-6 p-4 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                <div class="flex items-center justify-between text-xs mb-3">
+                    <span class="text-slate-500 font-bold uppercase">AI Compute Load</span>
+                    <span class="text-primary font-bold">12%</span>
+                </div>
+                <div class="w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                    <div class="bg-primary h-full w-[12%]"></div>
+                </div>
+                <div class="mt-4 grid grid-cols-2 gap-2 text-[10px] font-bold text-slate-500">
+                    <div class="flex items-center gap-1">
+                        <div class="size-1.5 rounded-full bg-green-500"></div> GPU CLUSTER ACTIVE
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <div class="size-1.5 rounded-full bg-green-500"></div> HL7 INTEGRATION OK
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes shimmer {
+        0% {
+            transform: translateX(-100%);
+        }
+
+        100% {
+            transform: translateX(300%);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+    const previewImg = document.getElementById('preview-img');
+    const previewContainer = document.getElementById('file-preview');
+    const promptContainer = document.getElementById('upload-prompt');
+    const filenameDisplay = document.getElementById('filename-display');
+    const form = document.getElementById('predict-form');
+    const loadingOverlay = document.getElementById('loading-overlay');
+
+    dropZone.onclick = (e) => {
+        if (e.target.tagName !== 'BUTTON' && !previewContainer.classList.contains('hidden')) return;
+        if (promptContainer.classList.contains('hidden')) return;
+        fileInput.click();
+    }
+
+    dropZone.ondragover = (e) => {
+        e.preventDefault();
+        dropZone.classList.add('bg-primary/20');
+    };
+
+    dropZone.ondragleave = () => {
+        dropZone.classList.remove('bg-primary/20');
+    };
+
+    dropZone.ondrop = (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('bg-primary/20');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            fileInput.files = files;
+            handleFiles(files[0]);
+        }
+    };
+
+    fileInput.onchange = () => {
+        if (fileInput.files.length > 0) {
+            handleFiles(fileInput.files[0]);
+        }
+    };
+
+    function handleFiles(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            previewImg.src = e.target.result;
+            previewContainer.classList.remove('hidden');
+            promptContainer.classList.add('hidden');
+            filenameDisplay.textContent = file.name;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function resetUpload() {
+        fileInput.value = '';
+        previewContainer.classList.add('hidden');
+        promptContainer.classList.remove('hidden');
+    }
+
+    function triggerSubmit() {
+        if (!fileInput.files.length) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Missing Image',
+                text: 'Please upload a medical scan to proceed.',
+                background: '#101f22',
+                color: '#fff'
+            });
+            return;
+        }
+
+        const patientId = document.querySelector('input[name="patient_id"]').value;
+        if (!patientId) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Missing Patient ID',
+                text: 'Please provide a Patient ID.',
+                background: '#101f22',
+                color: '#fff'
+            });
+            return;
+        }
+
+        loadingOverlay.classList.remove('hidden');
+        setTimeout(() => {
+            form.submit();
+        }, 1500); // Small delay for visual effect
+    }
+</script>
+{% endblock %}

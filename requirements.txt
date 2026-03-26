@@ -1,0 +1,7 @@
+flask
+flask-login
+flask-apscheduler
+flask-mail
+numpy
+tensorflow
+reportlab

@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block title %}Radiologist Dashboard - RadGen{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Welcome Section -->
+    <div>
+        <h2 class="text-3xl font-black tracking-tight text-slate-100">Welcome back, Dr. {{ current_user.username }}</h2>
+        <p class="text-slate-400 mt-1">AI models are synced and {{ reports_count }} reports are currently in the
+            archive.</p>
+    </div>
+
+    <!-- Metrics Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="glass p-6 rounded-2xl border-l-4 border-primary">
+            <p class="text-sm font-medium text-slate-400">Total Reports</p>
+            <div class="flex items-end justify-between mt-2">
+                <h3 class="text-3xl font-bold">{{ reports_count }}</h3>
+                <span
+                    class="text-primary text-sm font-bold flex items-center bg-primary/10 px-2 py-1 rounded-lg">+12%</span>
+            </div>
+        </div>
+        <div class="glass p-6 rounded-2xl">
+            <p class="text-sm font-medium text-slate-400">AI Confidence Avg</p>
+            <div class="flex items-end justify-between mt-2">
+                <h3 class="text-3xl font-bold">98.4%</h3>
+                <span
+                    class="text-emerald-400 text-sm font-bold flex items-center bg-emerald-400/10 px-2 py-1 rounded-lg">+0.2%</span>
+            </div>
+        </div>
+        <div class="glass p-6 rounded-2xl">
+            <p class="text-sm font-medium text-slate-400">Pending Reports</p>
+            <div class="flex items-end justify-between mt-2">
+                <h3 class="text-3xl font-bold">5</h3>
+                <span
+                    class="text-amber-400 text-sm font-bold flex items-center bg-amber-400/10 px-2 py-1 rounded-lg">High
+                    Priority</span>
+            </div>
+        </div>
+        <div class="glass p-6 rounded-2xl">
+            <p class="text-sm font-medium text-slate-400">Critical Cases</p>
+            <div class="flex items-end justify-between mt-2">
+                <h3 class="text-3xl font-bold">2</h3>
+                <span class="text-red-400 text-sm font-bold flex items-center bg-red-400/10 px-2 py-1 rounded-lg">Action
+                    Required</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Central Content Row -->
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        <!-- Analytics Chart -->
+        <div class="xl:col-span-2 glass rounded-2xl p-6 flex flex-col h-[400px]">
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h4 class="text-lg font-bold">Analysis Trends</h4>
+                    <p class="text-sm text-slate-400">Scan volume vs AI Prediction Accuracy</p>
+                </div>
+                <div class="flex gap-2">
+                    <button
+                        class="px-3 py-1 rounded-lg bg-primary text-background-dark text-xs font-bold">Daily</button>
+                    <button class="px-3 py-1 rounded-lg glass text-slate-400 text-xs font-bold">Weekly</button>
+                </div>
+            </div>
+            <div class="flex-1 w-full relative">
+                <!-- SVG Chart Simulation -->
+                <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 800 240">
+                    <defs>
+                        <linearGradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+                            <stop offset="0%" stop-color="#13c8ec" stop-opacity="0.3"></stop>
+                            <stop offset="100%" stop-color="#13c8ec" stop-opacity="0"></stop>
+                        </linearGradient>
+                    </defs>
+                    <path d="M0,200 Q100,180 200,190 T400,140 T600,160 T800,80 L800,240 L0,240 Z"
+                        fill="url(#chartGradient)"></path>
+                    <path d="M0,200 Q100,180 200,190 T400,140 T600,160 T800,80" fill="none" stroke="#13c8ec"
+                        stroke-width="3"></path>
+                    <circle cx="400" cy="140" fill="#13c8ec" r="5" stroke="#101f22" stroke-width="2"></circle>
+                    <circle cx="800" cy="80" fill="#13c8ec" r="5" stroke="#101f22" stroke-width="2"></circle>
+                </svg>
+                <!-- Grid lines -->
+                <div class="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-10">
+                    <div class="border-t border-slate-100 w-full"></div>
+                    <div class="border-t border-slate-100 w-full"></div>
+                    <div class="border-t border-slate-100 w-full"></div>
+                    <div class="border-t border-slate-100 w-full"></div>
+                </div>
+            </div>
+            <div class="flex justify-between mt-4 text-xs text-slate-500 font-medium px-2">
+                <span>08:00 AM</span>
+                <span>10:00 AM</span>
+                <span>12:00 PM</span>
+                <span>02:00 PM</span>
+                <span>04:00 PM</span>
+                <span>06:00 PM</span>
+            </div>
+        </div>
+
+        <!-- Predict Shortcut Zone -->
+        <div
+            class="glass-primary rounded-2xl p-8 flex flex-col items-center justify-center text-center border-dashed border-2 border-primary/30 h-[400px]">
+            <div class="size-20 rounded-full bg-primary/20 flex items-center justify-center mb-6">
+                <span class="material-symbols-outlined text-4xl text-primary">upload_file</span>
+            </div>
+            <h4 class="text-xl font-bold mb-2">Predict Hybrid</h4>
+            <p class="text-slate-400 text-sm mb-8 max-w-[200px]">Quickly upload imaging stacks here for instant AI
+                analysis.</p>
+            <a href="{{ url_for('predict') }}"
+                class="w-full bg-primary/20 hover:bg-primary/30 border border-primary/40 text-primary py-3 rounded-xl font-bold transition-all no-underline">
+                Browse Files
+            </a>
+            <p class="mt-4 text-[10px] text-slate-500 uppercase tracking-widest font-bold">Supports: DICOM, NIfTI, JPG
+            </p>
+        </div>
+    </div>
+
+    <!-- Recent Activity Tables -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-8">
+        <!-- Recent Predictions -->
+        <div class="glass rounded-2xl overflow-hidden">
+            <div class="p-6 border-b border-primary/10 flex items-center justify-between">
+                <h4 class="font-bold flex items-center gap-2 text-slate-100">
+                    <span class="material-symbols-outlined text-primary">auto_awesome</span>
+                    Recent Predictions
+                </h4>
+                <a href="{{ url_for('archive') }}" class="text-xs text-primary font-bold hover:underline">View All</a>
+            </div>
+            <div class="divide-y divide-primary/5">
+                {% for report in recent_reports %}
+                <div class="p-4 flex items-center gap-4 hover:bg-primary/5 transition-colors group"
+                    onclick="window.location='{{ url_for('view_report', report_id=report.id) }}'">
+                    <div class="size-12 rounded-lg bg-slate-800 flex items-center justify-center overflow-hidden">
+                        <div
+                            class="w-full h-full bg-gradient-to-br from-primary/40 to-slate-900 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-sm opacity-40">image</span>
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-bold text-slate-200">Patient ID: {{ report.patient_id }}</p>
+                        <p class="text-xs text-slate-400">Scan ID: #{{ report.id }}</p>
+                    </div>
+                    <div class="text-right">
+                        <p
+                            class="text-xs font-bold {% if report.status == 'Malignant' %}text-red-400{% else %}text-emerald-400{% endif %}">
+                            {{ report.status }}</p>
+                        <p class="text-[10px] text-slate-500">{{ report.timestamp }}</p>
+                    </div>
+                    <span
+                        class="material-symbols-outlined text-slate-500 group-hover:text-primary transition-colors cursor-pointer">chevron_right</span>
+                </div>
+                {% else %}
+                <div class="p-8 text-center text-slate-500">
+                    No recent predictions found.
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Pending Reports (Static Sample) -->
+        <div class="glass rounded-2xl overflow-hidden">
+            <div class="p-6 border-b border-primary/10 flex items-center justify-between">
+                <h4 class="font-bold flex items-center gap-2 text-slate-100">
+                    <span class="material-symbols-outlined text-amber-400">assignment_late</span>
+                    Pending Reports
+                </h4>
+                <span class="text-[10px] bg-amber-400/20 text-amber-400 px-2 py-1 rounded font-black">ACTION
+                    REQUIRED</span>
+            </div>
+            <div class="divide-y divide-primary/5">
+                <div class="p-4 flex items-center gap-4">
+                    <div class="size-10 rounded-full glass flex items-center justify-center text-amber-400">
+                        <span class="material-symbols-outlined">priority_high</span>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-bold text-slate-200">Mammography Follow-up</p>
+                        <p class="text-xs text-slate-400">Sarah Jenkins • Urgent review</p>
+                    </div>
+                    <button
+                        class="px-4 py-1.5 rounded-lg bg-primary/10 text-primary text-xs font-bold hover:bg-primary hover:text-background-dark transition-all">Review</button>
+                </div>
+                <div class="p-4 flex items-center gap-4">
+                    <div class="size-10 rounded-full glass flex items-center justify-center text-slate-400">
+                        <span class="material-symbols-outlined">schedule</span>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-bold text-slate-200">Knee X-ray (Left)</p>
+                        <p class="text-xs text-slate-400">Mark Roffalo • Normal priority</p>
+                    </div>
+                    <button
+                        class="px-4 py-1.5 rounded-lg bg-primary/10 text-primary text-xs font-bold hover:bg-primary hover:text-background-dark transition-all">Review</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

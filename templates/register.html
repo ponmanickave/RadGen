@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>RadGen - Create Account</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13c8ec",
+                        "background-dark": "#101f22",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+
+<body class="bg-background-dark font-display flex items-center justify-center min-h-screen p-6 py-12 relative">
+    <!-- Animated Background Shapes -->
+    <div class="absolute top-0 right-0 -mr-20 -mt-20 size-80 bg-primary/20 rounded-full blur-[100px]"></div>
+    <div class="absolute bottom-0 left-0 -ml-20 -mb-20 size-80 bg-blue-500/10 rounded-full blur-[100px]"></div>
+
+    <div class="relative w-full max-w-md">
+        <div class="bg-white/5 backdrop-blur-xl rounded-[2.5rem] border border-white/10 p-10 shadow-2xl">
+            <div class="flex flex-col items-center text-center mb-10">
+                <div class="size-16 bg-primary/20 rounded-2xl flex items-center justify-center text-primary mb-6">
+                    <span class="material-symbols-outlined text-4xl">person_add</span>
+                </div>
+                <h1 class="text-3xl font-black text-white tracking-tight mb-2">Create Account</h1>
+                <p class="text-slate-400">Join the RadGen AI Diagnostic Network</p>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div id="flash-{{ loop.index }}" onclick="this.remove()"
+                class="{% if category == 'success' %}bg-emerald-500/10 border-emerald-500/20 text-emerald-400{% else %}bg-red-500/10 border-red-500/20 text-red-400{% endif %} border px-4 py-4 rounded-2xl text-sm mb-6 flex items-center gap-3 cursor-pointer hover:opacity-80 transition-all select-none animate-in fade-in slide-in-from-top-4 duration-300">
+                <span class="material-symbols-outlined text-xl">{% if category == 'success' %}check_circle{% else
+                    %}error{% endif %}</span>
+                <div class="flex-1 font-medium">
+                    {{ message }}
+                </div>
+                <span class="material-symbols-outlined text-sm opacity-40">close</span>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <form method="POST" class="space-y-6">
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Full Name</label>
+                    <div class="relative group">
+                        <span
+                            class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-700 group-focus-within:text-primary transition-colors pointer-events-none">badge</span>
+                        <input type="text" name="name"
+                            class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition-all placeholder:text-slate-600"
+                            placeholder="Your Name" required>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Email Address</label>
+                    <div class="relative group">
+                        <span
+                            class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-700 group-focus-within:text-primary transition-colors pointer-events-none">mail</span>
+                        <input type="email" name="email"
+                            class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition-all placeholder:text-slate-600"
+                            placeholder="your@email.com" required>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Security Key</label>
+                    <div class="relative group">
+                        <span
+                            class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-700 group-focus-within:text-primary transition-colors pointer-events-none">lock</span>
+                        <input type="password" name="password"
+                            class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition-all placeholder:text-slate-600"
+                            placeholder="Password" required>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Confirm Security
+                        Key</label>
+                    <div class="relative group">
+                        <span
+                            class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-700 group-focus-within:text-primary transition-colors pointer-events-none">lock_reset</span>
+                        <input type="password" name="confirm_password"
+                            class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition-all placeholder:text-slate-600"
+                            placeholder="Confirm Password" required>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Role</label>
+                    <select name="role"
+                        class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-4 text-white focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition-all">
+                        <option value="user" class="bg-background-dark">User</option>
+                        <option value="doctor" class="bg-background-dark">Admin (Doctor)</option>
+                    </select>
+                </div>
+
+                <button type="submit"
+                    class="w-full bg-primary hover:bg-primary/90 text-background-dark font-black py-4 rounded-2xl shadow-xl shadow-primary/20 transition-all active:scale-95 flex items-center justify-center gap-2">
+                    CREATE ACCOUNT
+                    <span class="material-symbols-outlined">how_to_reg</span>
+                </button>
+
+                <div class="text-center mt-4">
+                    <p class="text-slate-500 text-sm">
+                        Already have an account?
+                        <a href="{{ url_for('login') }}" class="text-primary hover:underline font-bold">Log In</a>
+                    </p>
+                </div>
+            </form>
+
+            <div class="mt-10 pt-8 border-t border-white/5 text-center">
+                <p class="text-slate-500 text-xs">
+                    Protected by RadGen Enterprise Security <br>
+                    © 2026 AI Intelligence Systems
+                </p>
+            </div>
+        </div>
+
+        <div class="mt-8 text-center">
+            <a href="{{ url_for('index') }}"
+                class="text-slate-500 hover:text-primary text-sm font-medium transition-colors flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-base">arrow_back</span>
+                Back to Homepage
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>
